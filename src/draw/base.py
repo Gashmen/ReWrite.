@@ -15,6 +15,13 @@ class DxfBase:
             self.doc_dict_blocks = {block.dxf.name:block for block in self.doc_base.blocks
                                                              if '*' not in block.dxf.name}
 
+    def give_names_terminal(self):
+        '''Получение имен всех клемм'''
+        if hasattr(self, 'doc_dict_blocks'):
+            self.terminal_full_names = [block_name for block_name in self.doc_dict_blocks if 'viewside' in block_name]
+
+
+
     def check_shell(self,shell_translite_name):
         '''Проверка возможности создания оболочки'''
         shell_block_names = ('topside','upside','downside',
@@ -32,14 +39,32 @@ class DxfBase:
                     break
         return possible_to_draw_shell
 
+    def check_gland(self,gland_translite_name):
+        '''Проверка возможности создания кабельного ввода'''
+        gland_blocks_names = ('exe','exd','withcap','withoutcap')
+        possible_to_draw_gland = False
+        if hasattr(self,'doc_dict_blocks'):
+            for gland_name in gland_blocks_names:
+                block_name = gland_translite_name + '_' + gland_name
+                if block_name in self.doc_dict_blocks:
+                    possible_to_draw_gland = True
+                else:
+                    possible_to_draw_gland = False
+                    break
+        return possible_to_draw_gland
+
+
+
 
 
 dxf_base_path = 'D:\\Работа\\ReWrite\\information_for_testing\\DXF_BASE.dxf'
 dxf_base = DxfBase(dxf_base_path=dxf_base_path)
 dxf_base.set_doc_dxf()
 dxf_base.give_all_blocks()
+dxf_base.give_names_terminal()
+print(dxf_base.terminal_full_names)
 
-print(dxf_base.doc_dict_blocks)
+# print(dxf_base.doc_dict_blocks)
 
 
 
